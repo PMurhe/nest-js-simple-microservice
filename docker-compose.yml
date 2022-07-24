@@ -1,0 +1,30 @@
+version: "1.0"
+services:
+  api:
+    #image: pmurhe/nestjs-dockerized 
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: localhost
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_PORT: 5432
+      DB_DATABASE: company-team
+      NODE_ENV: dev
+      PORT: 3000
+    ports:
+      - "8080:3000"
+  
+  postgres:
+    image: postgres:10.4
+    ports:
+      - "35000:5432"
+    environment:
+      DB_HOST: localhost
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_PORT: 5432
+      DB_DATABASE: company-team
