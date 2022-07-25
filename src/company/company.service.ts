@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -16,23 +17,33 @@ export class CompanyService {
     private companyRepository: Repository<Company>,
   ) {}
 
+  /**
+   * This function will get list of all companies
+   * @returns Array of Company Objects
+   */
   async getAllCompanies() {
     const companies = await this.companyRepository.find();
     return companies;
   }
 
+  /**
+   * This function will get the Specific Company based on the ID
+   * @param id - UUID - refers to company ID
+   * @returns Company Object
+   */
   async getCompanyById(id) {
-    try {
-      const company = await this.companyRepository.findOne({ where: { id } });
-      if (!company) {
-        throw new NotFoundException(`Company with ID "${id}" not found`);
-      }
-      return company;
-    } catch (companyByIdError) {
-      throw new InternalServerErrorException(companyByIdError);
+    const company = await this.companyRepository.findOne({ where: { id } });
+    if (!company) {
+      throw new NotFoundException(`Company with ID "${id}" not found`);
     }
+    return company;
   }
 
+  /**
+   * This function will search the company based on name
+   * @param filterCompanyDto
+   * @returns Array of Company Objects, can be empty array in case of no match
+   */
   async getCompanyByName(
     filterCompanyDto: FilterCompanyDto,
   ): Promise<Company[]> {
@@ -53,17 +64,25 @@ export class CompanyService {
     }
   }
 
+  /**
+   * This funciton will create a new company.
+   * @param createCompanyDto
+   * @returns Newly Created Company Object
+   */
   async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company> {
-    try {
-      const { name, address, ceo } = createCompanyDto;
+    const { name, address, ceo } = createCompanyDto;
+    const alreadyExists = await this.companyRepository.find({
+      where: { name },
+    });
+    if (alreadyExists.length == 0) {
       const company = this.companyRepository.create({
         name,
         address,
         ceo,
       });
       return await this.companyRepository.save(company);
-    } catch (createCompanyErrror) {
-      throw new InternalServerErrorException(createCompanyErrror);
+    } else {
+      throw new ConflictException(`Company with name ${name} already exists`);
     }
   }
 }

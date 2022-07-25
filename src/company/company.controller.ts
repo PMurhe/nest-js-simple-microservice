@@ -12,7 +12,6 @@ import { CreateCompanyDto } from './dto/create-company-dto';
 import { Company } from './company.entity';
 import { FilterCompanyDto } from './dto/filter-company-dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetCompanyByIdDto } from './dto/get-company-by-id.dto';
 
 @Controller('company')
 @UseGuards(AuthGuard())
@@ -27,10 +26,7 @@ export class CompanyController {
   }
 
   @Get('/:id')
-  getCompanyById(
-    @Param('id') getCompanyByIdDto: GetCompanyByIdDto,
-  ): Promise<Company> {
-    const { id } = getCompanyByIdDto;
+  getCompanyById(@Param('id') id: string): Promise<Company> {
     return this.companyService.getCompanyById(id);
   }
 

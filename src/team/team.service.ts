@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -15,6 +19,13 @@ export class TeamService {
     private companyRepository: Repository<Company>,
   ) {}
 
+  /**
+   * This function will create a New Team based on Company ID.
+   * It will also validate if the company against which the team is being created, exists or not
+   * @param createTeamDto
+   * @param companyId
+   * @returns string message on success, error otherwise
+   */
   async createTeam(
     createTeamDto: CreateTeamDto,
     companyId: string,
@@ -26,12 +37,14 @@ export class TeamService {
 
     if (companyInfo) {
       const { project, teamlead, teamsize } = createTeamDto;
+
       const team = await this.teamRepository.create({
         project,
         teamlead,
         teamsize,
         company: companyInfo,
       });
+
       await this.teamRepository.save(team);
       return { message: `Team Created Successfully` };
     } else {
@@ -41,6 +54,10 @@ export class TeamService {
     }
   }
 
+  /**
+   * This function will get all Teams having with Company objects
+   * @returns Array of Teams with Company Objects
+   */
   async getAllTeams(): Promise<Team[]> {
     const teams = await this.teamRepository.find();
     return teams;
