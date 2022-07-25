@@ -1,6 +1,6 @@
 # nest-js-simple-microservice
-**Simple Microservice using NestJS
-**
+**Simple Microservice using NestJS**
+
 **Problem Statement : Create a simple microservice in node using nest-js with db as postgre-sql. Create Few CRUD API's to Create as well as View a Company and a Team.
 Use Docker to run your application & database
 API's should validate a JWT token before allowing access to the caller.**
