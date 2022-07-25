@@ -18,7 +18,8 @@ API's should validate a JWT token before allowing access to the caller.**
 Database : Postgre SQL**
 
 
-**Execute below command from terminal from the current project directory**
+**Execute below command from terminal from the current project directory**:
+
 **docker-compose up**
 
 This will start the project 
