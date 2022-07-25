@@ -17,6 +17,9 @@ API's should validate a JWT token before allowing access to the caller.**
 **Relationship: Company --> Team : One-Many, Team --> Company : Many-One
 Database : Postgre SQL**
 
+**Steps to run the project:**
+
+**Make sure your docker client is up**
 
 **Execute below command from terminal from the current project directory**:
 
