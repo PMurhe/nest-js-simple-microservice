@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Team } from 'src/team/team.entity';
 import { Company } from '../company/company.entity';
 import { AuthModule } from 'src/auth/auth.module';
-// import { TeamRepository } from './team.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Team, Company]), AuthModule],

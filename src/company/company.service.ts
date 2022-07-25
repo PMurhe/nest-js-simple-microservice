@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company-dto';
 import { Company } from './company.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,44 +22,48 @@ export class CompanyService {
   }
 
   async getCompanyById(id) {
-    const company = await this.companyRepository.findOne({ where: { id } });
-
-    if (!company) {
-      throw new NotFoundException(`Company with ID "${id}" not found`);
+    try {
+      const company = await this.companyRepository.findOne({ where: { id } });
+      if (!company) {
+        throw new NotFoundException(`Company with ID "${id}" not found`);
+      }
+      return company;
+    } catch (companyByIdError) {
+      throw new InternalServerErrorException(companyByIdError);
     }
-
-    return company;
   }
 
   async getCompanyByName(
     filterCompanyDto: FilterCompanyDto,
   ): Promise<Company[]> {
-    // return 'Fetched Company by name : Techwondoe';
-    const { name } = filterCompanyDto;
-    console.log(name);
-    const query = this.companyRepository.createQueryBuilder('company');
-
-    if (name) {
-      query.where('LOWER(company.name) LIKE LOWER(:name)', {
-        name: `%${name}%`,
-      });
-    }
     try {
+      const { name } = filterCompanyDto;
+      const query = this.companyRepository.createQueryBuilder('company');
+
+      if (name) {
+        query.where('LOWER(company.name) LIKE LOWER(:name)', {
+          name: `%${name}%`,
+        });
+      }
+
       const companies = await query.getMany();
       return companies;
-    } catch (e) {
-      return Promise.reject(e);
+    } catch (getCompanyByNameError) {
+      throw new InternalServerErrorException(getCompanyByNameError);
     }
   }
 
   async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company> {
-    console.log(createCompanyDto);
-    const { name, address, ceo } = createCompanyDto;
-    const company = this.companyRepository.create({
-      name,
-      address,
-      ceo,
-    });
-    return await this.companyRepository.save(company);
+    try {
+      const { name, address, ceo } = createCompanyDto;
+      const company = this.companyRepository.create({
+        name,
+        address,
+        ceo,
+      });
+      return await this.companyRepository.save(company);
+    } catch (createCompanyErrror) {
+      throw new InternalServerErrorException(createCompanyErrror);
+    }
   }
 }
