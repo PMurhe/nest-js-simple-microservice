@@ -16,3 +16,11 @@ API's should validate a JWT token before allowing access to the caller.**
 **Entities Involved: Company & Team**
 **Relationship: Company --> Team : One-Many, Team --> Company : Many-One
 Database : Postgre SQL**
+
+
+**Execute below command from terminal from the current project directory**
+**docker-compose up**
+
+This will start the project 
+API's will be up on Port 8080
+Postman Collection is added in the repo.
